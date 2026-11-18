@@ -54,6 +54,7 @@ def center(d, y, text, font, fill, cx=W // 2):
     d.text((cx - w / 2, y), text, font=font, fill=fill)
 
 def badge(d, x, y, n, r=11):
+    d.ellipse([x - r - 1.6, y - r - 1.6, x + r + 1.6, y + r + 1.6], fill=(255, 253, 244))
     d.ellipse([x - r, y - r, x + r, y + r], fill=RED)
     f = SANS_B(13 if n < 10 else 11)
     s = str(n)
@@ -155,6 +156,14 @@ def scene_bridge(d, b):
     d.rectangle([x1 - 60, deck - 26, x1 - 52, deck], fill=INK)
     d.line([x0 + 4, deck, x0 + 130, deck], fill=INK, width=5)
     d.line([x1 - 128, deck, x1 - 4, deck], fill=INK, width=5)
+    # suspension cables from both pylons
+    for px in (x0 + 30, x1 - 56):
+        for ex in (px - 22, px - 8, px + 10, px + 24):
+            d.line([px, deck - 26, ex, deck], fill=(70, 80, 92), width=1)
+    # small ship passing under the standing span
+    sx, sy = x1 - 108, y1 - 14
+    d.polygon([(sx, sy), (sx + 34, sy), (sx + 28, sy + 7), (sx + 5, sy + 7)], fill=(60, 70, 84))
+    d.rectangle([sx + 12, sy - 6, sx + 24, sy], fill=(60, 70, 84))
     # fallen span, tilted in the water
     d.polygon([(x0 + 138, deck + 16), (x1 - 136, deck + 8), (x1 - 132, deck + 20), (x0 + 142, deck + 28)], fill=INK)
     for cx, cy, r in [(x0 + 120, y0 + 22, 13), (x0 + 140, y0 + 15, 17), (x1 - 120, y0 + 20, 12)]:
@@ -170,6 +179,11 @@ def scene_hormuz(d, b):
     d.rectangle([cx - 30, cy - 2, cx + 8, cy + 8], fill=(90, 90, 96))
     d.polygon([(cx + 16, cy - 16), (cx + 24, cy - 2), (cx + 8, cy - 2)], fill=(232, 120, 40))
     d.polygon([(cx + 20, cy - 24), (cx + 26, cy - 8), (cx + 14, cy - 8)], fill=(240, 180, 50))
+    # distant second tanker, upper right of the strait
+    d.polygon([(x1 - 92, y0 + 40), (x1 - 48, y0 + 40), (x1 - 54, y0 + 48), (x1 - 86, y0 + 48)], fill=(90, 100, 114))
+    d.rectangle([x1 - 80, y0 + 33, x1 - 60, y0 + 40], fill=(90, 100, 114))
+    for wx in range(x0 + 16, x1 - 12, 34):
+        d.arc([wx, y1 - 22, wx + 18, y1 - 10], start=200, end=340, fill=(70, 120, 160), width=2)
     for dx, dy in [(-96, -22), (-70, -30), (88, -26)]:
         d.polygon([(cx + dx, cy + dy), (cx + dx + 16, cy + dy + 4), (cx + dx, cy + dy + 8)], fill=INK)
     d.arc([x0 + 18, cy - 18, x0 + 52, cy + 16], start=270, end=60, fill=INK, width=3)
