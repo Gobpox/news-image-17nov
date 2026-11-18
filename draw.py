@@ -64,13 +64,13 @@ def badge(d, x, y, n, r=11):
 HEROES = [
     (1, "EUROPE", "EUROPE · WAR", "bridge",
      "Ukraine hits Crimean Bridge again — span falls into strait",
-     "Road span fell into the Kerch Strait; rail resumed. Zelenskyy hails “unprecedented operation”."),
+     "Road span in the strait; rail resumed. Zelenskyy hails “unprecedented operation”."),
     (2, "MIDDLE EAST", "MIDDLE EAST · WAR", "hormuz",
      "Iran drones hit US radar in Bahrain; US jets strike Qeshm",
-     "All drones downed, Bahrain & US say. Iran says mines set tanker ablaze in Hormuz — unverified."),
+     "All drones downed, US & Bahrain say. Iran says mines set tanker ablaze — unverified."),
     (3, "ASIA", "ASIA · DIPLOMACY", "quad",
      "Trump holds first Quad summit in Manila",
-     "US, India, Japan, Australia unveil critical-minerals deals. Trump–Xi–Putin meet set for Shenzhen."),
+     "US, India, Japan & Australia: minerals deals. Trump–Xi–Putin to meet in Shenzhen."),
 ]
 
 CARDS = [
@@ -119,9 +119,9 @@ ALSO = [
     "Pope Leo XIV back from South America tour",
     "UK sanctions 8 Israeli settlement firms",
     "Israel: Kahana elected Knesset speaker 66–52",
-    "West Bank: settlers kill woman, 72, near Jericho",
+    "Settlers kill woman, 72, near Jericho",
     "Oman hosts Iran talks on shipping safety",
-    "Cyclone Akvan: Odisha evacuates as storm grows",
+    "Cyclone Akvan grows; Odisha evacuates",
     "India: bus in Uttarakhand gorge; 8 dead",
     "Japan protests Russian jet near Fukuoka",
     "China–Canada: more tariff cuts agreed",
@@ -330,7 +330,7 @@ BRIEF_DOTS = [
 
 def draw_map(d, x0, y0, w, h):
     d.rectangle([x0, y0, x0 + w, y0 + h], fill=(240, 236, 218), outline=INK, width=1)
-    cols, rows = 64, 31
+    cols, rows = 60, 30
     for r in range(rows):
         lat = 75 - (r + 0.5) * (135 / rows)
         for c in range(cols):
@@ -346,7 +346,7 @@ def draw_map(d, x0, y0, w, h):
         d.ellipse([px - 2.4, py - 2.4, px + 2.4, py + 2.4], fill=RED)
     for n, lon, lat, dx, dy in PINS:
         px, py = proj(lon, lat)
-        badge(d, px + dx, py + dy, n, r=9)
+        badge(d, px + dx, py + dy, n, r=8)
 
 # ---------------- page assembly ----------------------------------------------
 def main():
@@ -358,57 +358,56 @@ def main():
     center(d, 36, "Tuesday 17 November 2026", SERIF_B(44), INK)
     d.rectangle([10, 88, W - 10, 112], fill=RED)
     center(d, 94, "43 STORIES · 6 CONTINENTS · ALL FROM TUESDAY 17 NOVEMBER 2026", SANS_B(14), (255, 255, 255))
-    # heroes
-    hy, hh, hw, hgap = 120, 232, 329, 8
+    # heroes (v3: shorter scenes, larger decks at 13px)
+    hy, hh, hw, hgap = 120, 224, 329, 8
     for i, (n, region, kicker, scene, head, deck) in enumerate(HEROES):
         x = 10 + i * (hw + hgap)
         d.rectangle([x, hy, x + hw, hy + hh], fill=CARD, outline=INK, width=2)
-        SCENES[scene](d, (x + 2, hy + 2, x + hw - 2, hy + 104))
+        SCENES[scene](d, (x + 2, hy + 2, x + hw - 2, hy + 94))
         badge(d, x + 16, hy + 16, n, r=12)
-        d.text((x + 10, hy + 110), kicker, font=SANS_B(11), fill=REGION_COLOR[region])
-        y = text_block(d, x + 10, hy + 126, head, SANS_B(20), INK, hw - 20, 24, 3)
-        text_block(d, x + 10, y + 4, deck, SANS(12), (40, 48, 58), hw - 20, 15, 3)
-    # cards
-    cy0, chh, cw, cgap = 360, 120, 194, 8
+        d.text((x + 10, hy + 99), kicker, font=SANS_B(11), fill=REGION_COLOR[region])
+        y = text_block(d, x + 10, hy + 115, head, SANS_B(20), INK, hw - 20, 24, 3)
+        text_block(d, x + 10, y + 4, deck, SANS(13), (40, 48, 58), hw - 20, 16, 2)
+    # cards (v3: taller cards, 36px scenes, headlines at 16px bold)
+    cy0, chh, cw, cgap = 352, 146, 194, 8
     for i, (n, region, kicker, scene, head, deck) in enumerate(CARDS):
         x = 10 + (i % 5) * (cw + cgap)
         y = cy0 + (i // 5) * (chh + cgap)
         d.rectangle([x, y, x + cw, y + chh], fill=CARD, outline=INK, width=1)
-        scene_card(d, scene, (x + 2, y + 2, x + cw - 2, y + 32))
-        badge(d, x + 12, y + 17, n, r=9)
-        d.text((x + 8, y + 36), kicker, font=SANS_B(9), fill=REGION_COLOR[region])
-        yy = text_block(d, x + 8, y + 48, head, SANS_B(14), INK, cw - 16, 17, 2)
-        text_block(d, x + 8, max(yy + 2, y + 84), deck, SANS(10), (40, 48, 58), cw - 16, 12, 2)
+        scene_card(d, scene, (x + 2, y + 2, x + cw - 2, y + 38))
+        badge(d, x + 12, y + 20, n, r=10)
+        d.text((x + 8, y + 43), kicker, font=SANS_B(10), fill=REGION_COLOR[region])
+        yy = text_block(d, x + 8, y + 57, head, SANS_B(16), INK, cw - 16, 19, 3)
+        fit = max(0, (y + chh - 4 - (yy + 2)) // 12)
+        text_block(d, x + 8, yy + 2, deck, SANS(10), (40, 48, 58), cw - 16, 12, min(3, fit))
     # bottom headers
-    d.text((10, 612), "WHERE IT HAPPENED", font=SANS_B(14), fill=INK)
-    d.text((378, 612), "ALSO ON TUESDAY 17 NOVEMBER", font=SANS_B(15), fill=INK)
+    d.text((10, 660), "WHERE IT HAPPENED", font=SANS_B(14), fill=INK)
+    d.text((326, 660), "ALSO ON TUESDAY 17 NOVEMBER", font=SANS_B(15), fill=INK)
     strap = "30 MORE STORIES · Nos 14–43"
-    d.text((W - 10 - d.textlength(strap, font=SANS_B(11)), 615), strap, font=SANS_B(11), fill=GREY)
-    d.line([10, 634, W - 10, 634], fill=INK, width=2)
-    # map + tallies (left)
-    draw_map(d, 10, 642, 360, 180)
-    d.text((10, 826), "Numbered pins 1–13: hero & card stories. Small red dots: stories 14–43.", font=SANS(9), fill=GREY)
-    ty = 846
-    ty = text_block(d, 10, ty, "BY REGION — Europe 12 · Asia 10 · Middle East 6 · Americas 6 · Africa 4 · Russia 2 · Oceania 2 · Global 1", SANS(11), INK, 360, 14, 3)
-    ty = text_block(d, 10, ty + 3, "FIELDS — War · Diplomacy · Politics · Health · Climate · Markets · Disaster · Justice · Labour · Sport", SANS(11), INK, 360, 14, 3)
-    text_block(d, 10, ty + 3, "DATE CHECK — Excluded: anything first reported before Tuesday 17 Nov 2026.", SANS_B(10), RED, 360, 13, 2)
-    # also list (right, two columns of 15)
-    lx, lw, row_h = 378, 310, 21
+    d.text((W - 10 - d.textlength(strap, font=SANS_B(11)), 663), strap, font=SANS_B(11), fill=GREY)
+    d.line([10, 682, W - 10, 682], fill=INK, width=2)
+    # map + tallies (left, narrower in v3)
+    draw_map(d, 10, 690, 300, 152)
+    d.text((10, 846), "Pins 1–13: heroes & cards. Dots: stories 14–43.", font=SANS(9), fill=GREY)
+    ty = 864
+    ty = text_block(d, 10, ty, "BY REGION — Europe 12 · Asia 10 · Middle East 6 · Americas 6 · Africa 4 · Russia 2 · Oceania 2 · Global 1", SANS(11), INK, 300, 13, 3)
+    ty = text_block(d, 10, ty + 3, "FIELDS — War · Politics · Health · Climate · Markets · Disaster · Justice · Sport", SANS(11), INK, 300, 13, 3)
+    text_block(d, 10, ty + 3, "DATE CHECK — Excluded: anything first reported before Tuesday 17 Nov 2026.", SANS_B(10), RED, 300, 13, 2)
+    # also list (right, two columns of 15, all at 13px)
+    lx, lw, row_h = 326, 336, 18
     for i, item in enumerate(ALSO):
         col, row = i // 15, i % 15
         x = lx + col * (lw + 16)
-        y = 642 + row * row_h
+        y = 690 + row * row_h
         num = f"{14 + i}."
-        d.text((x, y), num, font=SANS_B(12), fill=RED)
-        nw = d.textlength(num + " ", font=SANS_B(12))
-        f = SANS(12)
-        if d.textlength(item, font=f) > lw - nw:
-            f = SANS(11)
-        d.text((x + nw, y), item, font=f, fill=INK)
+        d.text((x, y), num, font=SANS_B(13), fill=RED)
+        nw = d.textlength(num + " ", font=SANS_B(13))
+        assert d.textlength(item, font=SANS(13)) <= lw - nw, f"also item {14 + i} too wide"
+        d.text((x + nw, y), item, font=SANS(13), fill=INK)
     # footer
-    d.line([10, 968, W - 10, 968], fill=INK, width=2)
-    center(d, 976, "Every story happened or was first reported on Tuesday 17 November 2026. Contested claims are marked as claims.", SANS_B(11), INK)
-    center(d, 994, "Sources: Reuters · AP · AFP · BBC · Al Jazeera · WHO · UN · PAHO · IMF  |  One picture, one day: Tuesday 17 November 2026.", SANS(10), GREY)
+    d.line([10, 972, W - 10, 972], fill=INK, width=2)
+    center(d, 980, "Every story happened or was first reported on Tuesday 17 November 2026. Contested claims are marked as claims.", SANS_B(11), INK)
+    center(d, 997, "Sources: Reuters · AP · AFP · BBC · Al Jazeera · WHO · UN · PAHO · IMF  |  One picture, one day: Tuesday 17 November 2026.", SANS(10), GREY)
     img.save("entry.png", optimize=True)
     print("wrote entry.png")
 
